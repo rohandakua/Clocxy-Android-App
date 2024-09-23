@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.ClockAppByRohan" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.ClockAppByRohanKanit" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:font">@font/kanit</item>
+        <item name="android:textColor">@color/mainTextColor</item>
+    </style>
+    <style name="Theme.ClockAppByRohanInter" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:font">@font/inter</item>
+        <item name="android:textColor">@color/mainTextColor</item>
+    </style>
+    <style name="Theme.ClockAppByRohanKarla" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:font">@font/karla</item>
+        <item name="android:textColor">@color/mainTextColor</item>
+    </style>
+    <style name="Theme.ClockAppByRohanPacifico" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:font">@font/pacifico</item>
+        <item name="android:textColor">@color/mainTextColor</item>
+    </style>
+
+
+
+
+
+</resources>
