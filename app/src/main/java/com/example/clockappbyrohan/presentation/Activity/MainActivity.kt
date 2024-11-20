@@ -30,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    //private val viewModel: MainScreenViewModel by viewModels()
+//    private val viewModel: MainScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +55,8 @@ class MainActivity : ComponentActivity() {
                 LOCATION_PERMISSION_REQUEST_CODE
             )
         }
+//        viewModel.triedTimes=0
+
 
 
         val sharedPreferences = this.getSharedPreferences("sharedPrefs", MODE_PRIVATE)

@@ -1,0 +1,10 @@
+1. make sure when the user is going to zen mode the do not disturb mode of the phone turns on
+2. work on swipe gesture in the home screen
+3. work on alarm section backend
+4. work on setting page
+5. remember the initial screen
+6. make a clock widget for the app
+7. write test for the app
+8. optimize it for different screen size
+9. check for same time alarm if they are going on or not
+10.check for alarm after device reboots , are they fired or not
