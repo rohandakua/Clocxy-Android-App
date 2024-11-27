@@ -40,7 +40,17 @@ It has two buttons. Start/Pause button handles the functioning of the stopwatch.
 of the stopwatch.
 
 ### Working of the Alarm Page
+
+
+
 ***TODO***
 
-#### About sqlite datebase
-Android SQLite Database is an open-source database provided in Android that is used to store data inside the user’s device in the form of a Text file. We can perform many operations on this data such as adding new data, updating, reading, and deleting this data. SQLite is an offline database that is locally stored in the user’s device and we do not have to create any connection to connect to this database.  
+## About sqlite database
+Android SQLite Database is an open-source database provided in Android that is used to store data inside the user’s device in the form of a Text file. We can perform many operations on this data such as adding new data, updating, reading, and deleting this data. 
+SQLite is an offline database that is locally stored in the user’s device and we do not have to create any connection to connect to this database.  
+
+## Permission used in the app
+
+#### Read_external_storage
+This permission is used to access the SQLite database in the android phone to store the alarm's data , as if android is restarted then all the scheduled alarm are removed by the android 
+system. So we are storing them in SQLite database and if the device restarts or is rebooted in any case , the previous alarm will be rescheduled again.

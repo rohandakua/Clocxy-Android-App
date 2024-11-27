@@ -7,22 +7,12 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Alarms::class] , version = 1, exportSchema = false)
 abstract class alarmDb : RoomDatabase(){
-    abstract fun alarmDbDAO(): AlarmDbDAO
+    /**
+     * alarmDbDAO() fun is used to get the dao of the database.
+     * @return AlarmDbDAO : it is the dao of the database. Use it to transact with the database
+     */
+    abstract fun AlarmDbDAO(): AlarmDbDAO
 
-    companion object{
-        private var INSTANCE : alarmDb? = null
-        fun getAlarmDb(context: Context): alarmDb{
-            return INSTANCE?: synchronized(this){
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    alarmDb::class.java,
-                    "alarm_db"
-                ).build()
-                INSTANCE=instance
-                instance
-            }
-        }
 
-    }
 
 }
