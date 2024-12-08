@@ -7,6 +7,7 @@ plugins {
     // hilt
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+
 }
 
 android {
@@ -55,6 +56,7 @@ android {
     }
 }
  val HILT_VERSION= "2.51.1"
+ val ROOM_VERSION = "2.6.1"
 
 dependencies {
 
@@ -78,6 +80,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.3.0")
 
     // hilt
+    // FOR ANY VERSION CHANGE , ALSO CHANGE IT IN BUILD.GRADLE.KTS IN PROJECT LEVEL
     implementation("com.google.dagger:hilt-android:${HILT_VERSION}")
     kapt("com.google.dagger:hilt-android-compiler:${HILT_VERSION}")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -88,6 +91,18 @@ dependencies {
     // for Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
+
+
+
+
+    // Room components
+    implementation("androidx.room:room-runtime:${ROOM_VERSION}")
+    implementation("androidx.room:room-ktx:${ROOM_VERSION}")
+    annotationProcessor("androidx.room:room-compiler:${ROOM_VERSION}")
+
+
+
+
 
 
 

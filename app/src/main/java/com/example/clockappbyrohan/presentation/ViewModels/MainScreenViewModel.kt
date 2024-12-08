@@ -1,6 +1,7 @@
 package com.example.clockappbyrohan.presentation.ViewModels
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -9,8 +10,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.clockappbyrohan.data.online.API_KEY
 import com.example.clockappbyrohan.domain.Functions.KelvinToCelsius
 import com.example.clockappbyrohan.domain.repositoryInterface.weatherRetrofit
+import com.example.clockappbyrohan.presentation.Activity.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -31,10 +37,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient,
-    private val weatherRetrofit: weatherRetrofit
+    private val weatherRetrofit: weatherRetrofit,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     public fun dosth() {
-        Log.d("kyya", "ho rha ha")
+        //Log.d("kyya", "ho rha ha")
     }
 
     private val _hour: MutableStateFlow<Int?> = MutableStateFlow<Int?>(null)
@@ -119,16 +126,17 @@ class MainScreenViewModel @Inject constructor(
     fun setLocationData(locationToSet: Location?) {
         _locationData.value = locationToSet
     }
+    var triedTimes=0;
 
     //    @SuppressLint("SupportAnnotationUsage")
 //    @RequiresPermission(
 //        anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION]
 //    )
     @SuppressLint("MissingPermission")
-    private fun fetchLocation() {
-            try {
-                val locationTask = fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+    private fun fetchLocation(context: Context) {
 
+            try {
+                val locationTask =LocationServices.getFusedLocationProviderClient(context).lastLocation.addOnSuccessListener { location: Location? ->
                     setLocationData(location)
                     Log.d("location", "${location?.latitude} ${location?.longitude}")
                 }.addOnFailureListener { exception ->
@@ -152,15 +160,32 @@ class MainScreenViewModel @Inject constructor(
         try {
             withContext(Dispatchers.IO) {
 
-                fetchLocation()
-                delay(100)
+
+                fetchLocation(context)
+                delay(1000)
                 val weatherReport = async {
-                    weatherRetrofit.getWeatherReport(
-                        locationData.value!!.latitude,
-                        locationData.value!!.longitude,
-                        API_KEY
-                    )
+
+                    if(locationData.value==null && triedTimes>4){
+                        weatherRetrofit.getWeatherReport(
+                            28.6139,
+                            77.2090
+                            ,
+                            API_KEY
+                        )
+
+
+                    }else{
+                        weatherRetrofit.getWeatherReport(
+                            locationData.value!!.latitude,
+                            locationData.value!!.longitude,
+                            API_KEY
+                        )
+
+                    }
+
                 }
+                triedTimes++;
+                Log.d("triedTimes",triedTimes.toString())
                 val report = weatherReport.await()
                 setTemperature(KelvinToCelsius(report.main.temp).toString().substring(0,4)+" C")
                 setWeatherType(report.weather[0].main)
@@ -204,7 +229,7 @@ class MainScreenViewModel @Inject constructor(
     private suspend fun updateDate() {
         while (true) {
             getDateAndTime()
-            Log.d("time", "${hour.value}  ${minute.value}")
+            //Log.d("time", "${hour.value}  ${minute.value}")
 
             delay(Math.max(0, 1000 * (60 - second.value)).toLong())
             // adding this delay for getting the data every minute
@@ -234,7 +259,7 @@ class MainScreenViewModel @Inject constructor(
                     val currentDateAndTime = Calendar.getInstance().time
                     val formattedDateAndTime = dateFormat.format(currentDateAndTime)
                     setSecond(formattedDateAndTime.substring(17, 19).toInt())
-                    Log.d("the current time","${formattedDateAndTime}")
+                    //Log.d("the current time","${formattedDateAndTime}")
                     delay(1000)
                 }
 
