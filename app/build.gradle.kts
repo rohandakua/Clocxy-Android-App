@@ -57,6 +57,9 @@ android {
 }
  val HILT_VERSION= "2.51.1"
  val ROOM_VERSION = "2.6.1"
+ val MOCKITO_VERSION = "4.11.0"
+ val CORE_TESTING_VERSION = "2.1.0"
+ val KOTLINX_COROUTINES_TEST_VERSION = "1.7.3"
 
 dependencies {
 
@@ -99,6 +102,12 @@ dependencies {
     implementation("androidx.room:room-runtime:${ROOM_VERSION}")
     implementation("androidx.room:room-ktx:${ROOM_VERSION}")
     annotationProcessor("androidx.room:room-compiler:${ROOM_VERSION}")
+
+
+    testImplementation ("org.mockito:mockito-core:${MOCKITO_VERSION}")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:${KOTLINX_COROUTINES_TEST_VERSION}")
+    androidTestImplementation ("androidx.arch.core:core-testing:${CORE_TESTING_VERSION}") // For LiveData/StateFlow
+
 
 
 

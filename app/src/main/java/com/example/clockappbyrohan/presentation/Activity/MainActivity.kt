@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
 //
 //                }
 //            }
-//            CustomThemeKanit {
+            CustomThemeKanit {
 //                Scaffold(
 //                    modifier = Modifier.fillMaxSize()
 //                ) {
@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
 //
 //                }
 //            }
-            CustomThemePacifico {
+//            CustomThemePacifico {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) {

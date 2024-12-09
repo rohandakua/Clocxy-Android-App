@@ -33,8 +33,10 @@ import androidx.navigation.compose.rememberNavController
 
 import com.example.clockappbyrohan.R
 import com.example.clockappbyrohan.domain.Functions.formatString
-import com.example.clockappbyrohan.ui.theme.CardBackground
+import com.example.clockappbyrohan.ui.theme.CardBackgroundBlack
 import  com.example.clockappbyrohan.presentation.ViewModels.MainScreenViewModel
+import com.example.clockappbyrohan.ui.theme.MainTextColorOrange
+import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
 
 
 //@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
@@ -106,7 +108,11 @@ fun HomePage(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     navController: NavHostController = rememberNavController(),
-    viewModel: MainScreenViewModel
+    viewModel: MainScreenViewModel,
+    cardContainerColor: Color = CardBackgroundBlack,
+    backgroundColor: Color = Color.Black,
+    fontColor: Color = MainTextColorOrange,
+    secondaryFontColor: Color = SecondaryTextColorOrange
 ) {
     viewModel.dosth()
 
@@ -142,7 +148,7 @@ fun HomePage(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.Black)
+                .background(backgroundColor)
         ) {
             Column(
                 Modifier.fillMaxSize(),
@@ -155,10 +161,10 @@ fun HomePage(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .weight(.9f), colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor = cardContainerColor,
+                        contentColor = backgroundColor,
+                        disabledContainerColor = backgroundColor,
+                        disabledContentColor = backgroundColor
                     ), shape = RoundedCornerShape(24.dp)
                 ) {
                     Box(
@@ -184,10 +190,10 @@ fun HomePage(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .weight(.6f), colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor = cardContainerColor,
+                        contentColor = backgroundColor,
+                        disabledContainerColor = backgroundColor,
+                        disabledContentColor = backgroundColor
                     ), shape = RoundedCornerShape(24.dp)
                 ) {
                     Box(
@@ -201,7 +207,7 @@ fun HomePage(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Spacer(modifier = Modifier.weight(.4f))
+                            Spacer(modifier = Modifier.weight(.2f))
                             Text(
                                 modifier = Modifier.weight(.5f),
                                 text = timeHourText,
@@ -227,7 +233,7 @@ fun HomePage(
                                 text = timeSecondText,
                                 fontSize = 31.sp
                             )
-                            Spacer(modifier = Modifier.weight(.4f))
+                            Spacer(modifier = Modifier.weight(.2f))
                         }
                     }
                 }
@@ -238,10 +244,10 @@ fun HomePage(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .weight(1f), colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor = cardContainerColor,
+                        contentColor = backgroundColor,
+                        disabledContainerColor = backgroundColor,
+                        disabledContentColor =backgroundColor
                     ), shape = RoundedCornerShape(24.dp)
                 ) {
                     Box(
@@ -289,7 +295,7 @@ fun HomePage(
                                     Icon(
                                         painter = painterResource(R.drawable.baseline_water_drop_24),
                                         contentDescription = "water",
-                                        tint = colorResource(id = R.color.mainTextColor)
+                                        tint = fontColor
                                     )
                                     Spacer(modifier = Modifier.size(10.dp))
                                     Text(
@@ -328,10 +334,8 @@ fun HomePage(
                             navController.navigate("zenMode")
                         },
                     colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor = cardContainerColor,
+                        contentColor = backgroundColor
                     ),
                     shape = RoundedCornerShape(24.dp)
                 ) {
@@ -354,7 +358,7 @@ fun HomePage(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.Black)
+                .background(backgroundColor)
         ) {
             Column(
                 Modifier.fillMaxSize(),
@@ -367,10 +371,8 @@ fun HomePage(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .weight(.6f), colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor = cardContainerColor,
+                        contentColor = backgroundColor
                     ), shape = RoundedCornerShape(24.dp)
                 ) {
                     Box(
@@ -400,10 +402,8 @@ fun HomePage(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .weight(.6f), colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor = cardContainerColor,
+                        contentColor = backgroundColor
                     ), shape = RoundedCornerShape(24.dp)
                 ) {
                     Box(
@@ -454,10 +454,8 @@ fun HomePage(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .weight(.9f), colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor =cardContainerColor,
+                        contentColor = backgroundColor
                     ), shape = RoundedCornerShape(24.dp)
                 ) {
                     Box(
@@ -506,7 +504,7 @@ fun HomePage(
                                         modifier=Modifier.padding(top = 2.dp),
                                         painter = painterResource(R.drawable.baseline_water_drop_24),
                                         contentDescription = "water",
-                                        tint = colorResource(id = R.color.mainTextColor)
+                                        tint = fontColor
                                     )
                                     Spacer(modifier = Modifier.size(10.dp))
                                     Text(
@@ -535,10 +533,8 @@ fun HomePage(
                             navController.navigate("zenMode")
                         },
                     colors = CardDefaults.cardColors(
-                        containerColor = CardBackground,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Black,
-                        disabledContentColor = Color.White
+                        containerColor = cardContainerColor,
+                        contentColor = backgroundColor
                     ),
                     shape = RoundedCornerShape(24.dp)
                 ) {
