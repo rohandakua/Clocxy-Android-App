@@ -12,9 +12,9 @@
 12.Get the permission from the user for everything
 
 TODO for 9th dec
-1. create a twitter account (other than rohanDakua) and ask for contribution on this app
-2. create a new github account and add the code of this app and ask for help
-3. add setting screen
+1. create a twitter account (other than rohanDakua) and ask for contribution on this app DONE
+2. create a new github account and add the code of this app and ask for help    DONE
+3. add setting screen       DONE
     * changing the font - four options
     * changing the color - three options
     * changing the background color - two options (Black and White ) also make sure to change the card color accordingly
