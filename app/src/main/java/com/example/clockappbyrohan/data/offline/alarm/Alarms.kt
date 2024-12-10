@@ -16,12 +16,12 @@ data class Alarms (
     /**
      * name of the alarm, it can be null
      */
-    @ColumnInfo val name: String?,
+    @ColumnInfo val name: String?="alarm name",
     /**
      * timeInMs stores the exact time in milli seconds in db
      * this should be a time between 0 hrs to 24 hrs , as this is the time of the day when the alarm will go on
      */
-    @ColumnInfo  val timeInMs: Long,
+    @ColumnInfo  val timeInMs: Long=28800000,
 
     /**
      * this are for the purpose of repeating the alarm on specific days

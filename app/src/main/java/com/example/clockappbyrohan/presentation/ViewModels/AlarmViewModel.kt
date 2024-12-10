@@ -54,6 +54,19 @@ class AlarmViewModel @Inject constructor(
     private var _alarmList = mutableListOf<Alarms>()
     val alarmList get() = _alarmList
 
+    fun setAlarm(alarm: Alarms){
+        _data.value = alarm
+    }
+    fun setAlarmTitle(title:String){
+        _alarmTitle.value = title
+    }
+    fun setHours(hours:String){
+        _hours.value = hours
+    }
+    fun setMinutes(minutes:String) {
+        _minutes.value = minutes
+    }
+
     /**
      * getAllAlarms() is used to get all the alarm in a list
      */
@@ -167,5 +180,7 @@ class AlarmViewModel @Inject constructor(
         }
 
     }
+
+
 
 }

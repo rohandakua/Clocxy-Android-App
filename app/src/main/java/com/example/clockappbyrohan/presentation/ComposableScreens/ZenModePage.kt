@@ -26,10 +26,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.clockappbyrohan.domain.Functions.formatString
 import com.example.clockappbyrohan.presentation.ViewModels.MainScreenViewModel
+import com.example.clockappbyrohan.ui.theme.CardBackgroundBlack
 import com.example.clockappbyrohan.ui.theme.CustomThemeInter
 import com.example.clockappbyrohan.ui.theme.CustomThemeKanit
 import com.example.clockappbyrohan.ui.theme.CustomThemeKarla
 import com.example.clockappbyrohan.ui.theme.CustomThemePacifico
+import com.example.clockappbyrohan.ui.theme.MainTextColorOrange
+import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
 
 //@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
 //@Composable
@@ -101,7 +104,11 @@ fun ZenModePage(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     navController: NavHostController = rememberNavController(),
-    viewModel: MainScreenViewModel
+    viewModel: MainScreenViewModel,
+    cardContainerColor: Color = CardBackgroundBlack,
+    backgroundColor: Color = Color.Black,
+    fontColor: Color = MainTextColorOrange,
+    secondaryFontColor: Color = SecondaryTextColorOrange
 ) {
     val localConfiguration = LocalConfiguration.current
     val isPortrait =
@@ -116,7 +123,7 @@ fun ZenModePage(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
+                .background(backgroundColor)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -148,7 +155,7 @@ fun ZenModePage(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
+                .background(backgroundColor)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),

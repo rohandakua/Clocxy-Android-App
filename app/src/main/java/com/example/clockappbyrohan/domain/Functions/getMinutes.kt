@@ -7,5 +7,5 @@ package com.example.clockappbyrohan.domain.Functions
  */
 fun getMinutes(timeInMs:Long):String {
     val minutes = (((timeInMs/1000)/60)%60)
-    return minutes.toString()
+    return minutes.toString().padStart(2,'0')
 }

@@ -1,0 +1,5 @@
+#ignore the api file
+app/src/main/java/com/example/clockappbyrohan/data/online/BaseUrlWeatherApi.kt
+
+#ignore the todo.txt
+app/src/main/java/com/example/clockappbyrohan/TODO.txt
