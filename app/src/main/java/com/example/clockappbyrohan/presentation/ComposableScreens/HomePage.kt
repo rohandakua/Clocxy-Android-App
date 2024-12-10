@@ -362,10 +362,10 @@ fun HomePage(
         ) {
             Column(
                 Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.weight(.3f))
+                Spacer(modifier = Modifier.weight(.2f))
 
                 Card(
                     modifier = Modifier
@@ -377,7 +377,6 @@ fun HomePage(
                 ) {
                     Box(
                         modifier = Modifier
-                            .padding(8.dp)
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
@@ -396,7 +395,6 @@ fun HomePage(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(.2f))
 
                 Card(
                     modifier = Modifier
@@ -408,7 +406,6 @@ fun HomePage(
                 ) {
                     Box(
                         modifier = Modifier
-                            .padding(8.dp)
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
@@ -448,7 +445,6 @@ fun HomePage(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(.2f))
 
                 Card(
                     modifier = Modifier
@@ -460,7 +456,6 @@ fun HomePage(
                 ) {
                     Box(
                         modifier = Modifier
-                            .padding(3.dp)
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
@@ -480,14 +475,14 @@ fun HomePage(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = temperatureText, fontSize = 36.sp
+                                        text = temperatureText, fontSize = 33.sp
                                     )
                                 }
 
                                 Text(
                                     modifier = Modifier.weight(1f),
                                     text = feelsLikeText,
-                                    fontSize = 30.sp
+                                    fontSize = 28.sp
                                 )
                             }
                             Row(
@@ -522,7 +517,6 @@ fun HomePage(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(.2f))
 
                 Card(
                     modifier = Modifier
@@ -550,7 +544,7 @@ fun HomePage(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(.3f))
+                Spacer(modifier = Modifier.weight(.2f))
             }
         }
     }

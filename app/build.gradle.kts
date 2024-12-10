@@ -60,6 +60,7 @@ android {
  val MOCKITO_VERSION = "4.11.0"
  val CORE_TESTING_VERSION = "2.1.0"
  val KOTLINX_COROUTINES_TEST_VERSION = "1.7.3"
+ val PAGER_VERSION = "0.32.0"
 
 dependencies {
 
@@ -107,6 +108,11 @@ dependencies {
     testImplementation ("org.mockito:mockito-core:${MOCKITO_VERSION}")
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:${KOTLINX_COROUTINES_TEST_VERSION}")
     androidTestImplementation ("androidx.arch.core:core-testing:${CORE_TESTING_VERSION}") // For LiveData/StateFlow
+
+    // for swipe screen
+    implementation ("androidx.compose.foundation:foundation:1.5.0")
+
+
 
 
 

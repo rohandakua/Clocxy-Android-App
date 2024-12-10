@@ -1,10 +1,13 @@
 package com.example.clockappbyrohan.domain.Functions
 
-fun milliSecondsToTime(ms:Long):String {
-    // returns a string that has hours : minutes : seconds : milliseconds
-    val Ms = ms % 1000
+fun milliSecondsToTime(ms: Long): String {
+    // Extract time components
+    val Ms = (ms % 1000)/10
     val seconds = (ms / 1000) % 60
-    val minutes = ((ms/1000)/60) % 60
-    val hours = (((ms/1000)/60)/60) % 24
-    return "$hours : $minutes : $seconds : $Ms"
+    val minutes = ((ms / 1000) / 60) % 60
+    val hours = (((ms / 1000) / 60) / 60) % 24
+
+    // Format each component to be exactly two characters long
+    return "%02d : %02d : %02d : %02d".format(hours, minutes, seconds, Ms)
 }
+

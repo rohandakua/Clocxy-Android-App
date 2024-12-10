@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.clockappbyrohan.presentation.ComposableScreens.HomePage
+import com.example.clockappbyrohan.presentation.ComposableScreens.SwipeableScreens
 import com.example.clockappbyrohan.presentation.ComposableScreens.ZenModePage
 import com.example.clockappbyrohan.presentation.Navigation.NavControllerGraph
 import com.example.clockappbyrohan.presentation.ViewModels.MainScreenViewModel
@@ -94,7 +95,7 @@ class MainActivity : ComponentActivity() {
 //
 //                }
 //            }
-            CustomThemeKanit {
+           CustomThemeKanit {
 //                Scaffold(
 //                    modifier = Modifier.fillMaxSize()
 //                ) {
@@ -106,7 +107,7 @@ class MainActivity : ComponentActivity() {
 //
 //                }
 //            }
-//            CustomThemePacifico {
+  //          CustomThemePacifico {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) {

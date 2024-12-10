@@ -34,34 +34,35 @@ class StopWatchViewModel @Inject constructor(
     val isRunning: StateFlow<Boolean> get() = _isRunning
 
     fun startStopwatch() {
-        _isRunning.value=true
+        _isRunning.value = true
         startStopwatch.execute()
-        while(_isRunning.value){
-            viewModelScope.launch {
-                withContext(Dispatchers.Default){
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                while (_isRunning.value) {
                     delay(5L)  // every 5 milliseconds it will update the time in the stopWatch
-                    _time.value=getFormattedTime.execute()
+                    _time.value = getFormattedTime.execute()
                 }
             }
         }
     }
 
-    fun pauseStopwatch(){
-        _isRunning.value=false
+    fun pauseStopwatch() {
+        _isRunning.value = false
         pauseStopwatch.execute()
     }
 
-    fun resetStopwatch(){
-        _isRunning.value=false
+    fun resetStopwatch() {
+        _isRunning.value = false
         resetStopwatch.execute()
-        _time.value="00 : 00 : 00 : 00"
+        _time.value= getFormattedTime.execute()
 
     }
 
-    fun startStop(){
-        if(_isRunning.value==false){
+    fun startStop() {
+        println("startStop clicked")
+        if (_isRunning.value == false) {
             startStopwatch()
-        }else{
+        } else {
             pauseStopwatch()
         }
     }

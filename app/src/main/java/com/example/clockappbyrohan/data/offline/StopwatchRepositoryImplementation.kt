@@ -6,22 +6,22 @@ import kotlinx.coroutines.delay
 class StopwatchRepositoryImplementation : StopwatchRepository {
     private var timeInMillis : Long = 0L
     private var isRunning : Boolean = false
+    private var timeStart : Long = 0L
 
-    init {
-        timeInMillis=0L
-        isRunning=false
-    }
     override suspend fun start() {
-        isRunning= true
-        while(isRunning){
-            delay(10L)// make changes in every 10 milli seconds
-            timeInMillis=+10
-        }
+            isRunning = true
+            timeStart = System.currentTimeMillis() - timeInMillis // Resume from previous time
+            while (isRunning) {
+                timeInMillis = System.currentTimeMillis() - timeStart
+                delay(90L) // Update every 10 milliseconds
+            }
+
     }
 
     override fun reset() {
         isRunning=false
         timeInMillis=0L
+        timeStart=0L
     }
 
     override fun pause() {

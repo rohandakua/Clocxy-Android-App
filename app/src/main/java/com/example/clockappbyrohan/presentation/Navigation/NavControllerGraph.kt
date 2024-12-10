@@ -1,6 +1,7 @@
 package com.example.clockappbyrohan.presentation.Navigation
 
 import android.content.Context
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import com.example.clockappbyrohan.presentation.ComposableScreens.AlarmDetailPag
 import com.example.clockappbyrohan.presentation.ComposableScreens.AlarmHomePage
 import com.example.clockappbyrohan.presentation.ComposableScreens.HomePage
 import com.example.clockappbyrohan.presentation.ComposableScreens.StopWatchPage
+import com.example.clockappbyrohan.presentation.ComposableScreens.SwipeableScreens
 import com.example.clockappbyrohan.presentation.ComposableScreens.ZenModePage
 import com.example.clockappbyrohan.presentation.ViewModels.AlarmViewModel
 import com.example.clockappbyrohan.presentation.ViewModels.MainScreenViewModel
@@ -42,8 +44,20 @@ fun NavControllerGraph(
     val sharedPreferences = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
     NavHost(
         navController = navController,
-        startDestination = "${sharedPreferences.getString("page", "home")}"
+        startDestination = "swipeScreen"//"${sharedPreferences.getString("page", "home")}"
     ) {      // to cache the initial screen in shared preferences
+        composable("swipeScreen") {
+            SwipeableScreens(
+                modifier = modifier, navController = navController,
+                cardContainerColor = cardContainerColor,
+                backgroundColor = backgroundColor,
+                fontColor = fontColor,
+                secondaryFontColor = secondaryFontColor,
+                viewModel = viewModel,
+                stopwatchViewModel = stopwatchViewModel,
+                alarmViewModel = alarmViewModel
+            )
+        }
         composable("home") {
             HomePage(
                 viewModel = viewModel, navController = navController,
