@@ -21,6 +21,7 @@ import com.example.clockappbyrohan.presentation.ComposableScreens.SwipeableScree
 import com.example.clockappbyrohan.presentation.ComposableScreens.ZenModePage
 import com.example.clockappbyrohan.presentation.ViewModels.AlarmViewModel
 import com.example.clockappbyrohan.presentation.ViewModels.MainScreenViewModel
+import com.example.clockappbyrohan.presentation.ViewModels.SettingViewModel
 import com.example.clockappbyrohan.presentation.ViewModels.StopWatchViewModel
 import com.example.clockappbyrohan.ui.theme.CardBackgroundBlack
 import com.example.clockappbyrohan.ui.theme.MainTextColorOrange
@@ -34,10 +35,11 @@ fun NavControllerGraph(
     viewModel: MainScreenViewModel = hiltViewModel(),
     stopwatchViewModel: StopWatchViewModel = hiltViewModel(),
     alarmViewModel: AlarmViewModel = hiltViewModel(),
-    cardContainerColor: Color = CardBackgroundBlack,
-    backgroundColor: Color = Color.Black,
-    fontColor: Color = MainTextColorOrange,
-    secondaryFontColor: Color = SecondaryTextColorOrange
+    cardContainerColor: Color,
+    backgroundColor: Color ,
+    fontColor: Color ,
+    secondaryFontColor: Color ,
+    settingViewModel: SettingViewModel = hiltViewModel()
 
 ) {
 
@@ -48,14 +50,15 @@ fun NavControllerGraph(
     ) {      // to cache the initial screen in shared preferences
         composable("swipeScreen") {
             SwipeableScreens(
-                modifier = modifier, navController = navController,
+                modifier = Modifier, navController = navController,
                 cardContainerColor = cardContainerColor,
                 backgroundColor = backgroundColor,
                 fontColor = fontColor,
                 secondaryFontColor = secondaryFontColor,
                 viewModel = viewModel,
                 stopwatchViewModel = stopwatchViewModel,
-                alarmViewModel = alarmViewModel
+                alarmViewModel = alarmViewModel,
+                settingViewModel = settingViewModel, context = context
             )
         }
         composable("home") {
@@ -64,7 +67,7 @@ fun NavControllerGraph(
                 cardContainerColor = cardContainerColor,
                 backgroundColor = backgroundColor,
                 fontColor = fontColor,
-                secondaryFontColor = secondaryFontColor
+                secondaryFontColor = secondaryFontColor, context = context, modifier = Modifier
             )
         }
         composable("zenMode") {

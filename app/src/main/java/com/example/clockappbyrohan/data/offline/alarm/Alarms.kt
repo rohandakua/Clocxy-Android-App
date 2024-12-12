@@ -12,7 +12,7 @@ data class Alarms (
     /**
      * id of the alarm
      */
-    @PrimaryKey(autoGenerate = true) val id: Int ,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0 ,
     /**
      * name of the alarm, it can be null
      */

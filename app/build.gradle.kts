@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace = "com.example.clockappbyrohan"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.clockappbyrohan"
@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -102,7 +103,7 @@ dependencies {
     // Room components
     implementation("androidx.room:room-runtime:${ROOM_VERSION}")
     implementation("androidx.room:room-ktx:${ROOM_VERSION}")
-    annotationProcessor("androidx.room:room-compiler:${ROOM_VERSION}")
+    kapt("androidx.room:room-compiler:${ROOM_VERSION}")
 
 
     testImplementation ("org.mockito:mockito-core:${MOCKITO_VERSION}")

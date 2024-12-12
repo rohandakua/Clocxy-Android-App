@@ -12,7 +12,13 @@ import androidx.core.app.NotificationCompat
 import com.example.clockappbyrohan.R
 import com.example.clockappbyrohan.data.Constants.CHANNEL_ID
 import com.example.clockappbyrohan.domain.repositoryInterface.alarmSchedulerInterface
+import com.example.clockappbyrohan.framework.MediaPlayerManager
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -25,119 +31,121 @@ import javax.inject.Inject
 /**
  * This class is used to receive the notification from the alarm manager when the alarm is triggered and AlarmReceiver class is used to show the notification.
  */
-class AlarmReceiver @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val mediaPlayer: MediaPlayer,
-    private val notificationManager: NotificationManager,
-    private val alarmDbDAO: AlarmDbDAO,
-    private val alarmSchedulerInterface: alarmSchedulerInterface
-): BroadcastReceiver() {
+@AndroidEntryPoint
+class AlarmReceiver : BroadcastReceiver() {
 
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var alarmDbDAO: AlarmDbDAO
+    private lateinit var alarmSchedulerInterface: alarmSchedulerInterface
+    private lateinit var mediaPlayerManager: MediaPlayerManager
 
-
-    /**
-     * init block is used to create a notification channel.
-     */
-    init {
-        createNotificationChannel(context)
-    }
-
-    /**
-     * onReceive() fun is called when the alarm is triggered.
-     * we want to do mainly two things when the alarm is triggered.
-     * first :- we want to show a notification to the user that the alarm is triggered. It should have a stop button that immediately stops the alarm.
-     * second :- we want to make a sound on full volume. If the user stops this sound should stop
-     * @param p0 : give the context
-     * @param p1 : give the intent which will contain details of the alarm i.e. name of it.
-     * we are checking if the noti. channel exists , if not then we are creating a noti. channel
-     */
-    override fun onReceive(p0: Context?, p1: Intent?) {
-        try{
-            val alarmName = p1?.getStringExtra("alarmName")
-            val alarmId = p1?.getIntExtra("alarmId",0)
-
-            mediaPlayer.start()
-
-            // deleting all the alarms that are older than 2 minutes
-            CoroutineScope(Dispatchers.IO).launch {
-                alarmDbDAO.deleteOldAlarms(System.currentTimeMillis()-120000)  // for older than 2 minutes
+    override fun onReceive(context: Context?, intent: Intent?) {
+        try {
+            // Manually inject dependencies using Hilt
+            if (!::mediaPlayerManager.isInitialized) {
+                val entryPoint = EntryPointAccessors.fromApplication(
+                    context!!.applicationContext,
+                    AlarmReceiverEntryPoint::class.java
+                )
+                mediaPlayer = entryPoint.mediaPlayer()
+                notificationManager = entryPoint.notificationManager()
+                alarmDbDAO = entryPoint.alarmDbDAO()
+                alarmSchedulerInterface = entryPoint.alarmSchedulerInterface()
+                mediaPlayerManager = entryPoint.mediaPlayerManager()
             }
+            createNotificationChannel(context = context!!.applicationContext)
 
-            val stopIntent = Intent(context,AlarmNotificationReceiver::class.java).putExtra("action","stop")
+            val alarmName = intent?.getStringExtra("alarmName")
+            val alarmId = intent?.getIntExtra("alarmId", 0)
+            CoroutineScope(Dispatchers.Main).launch {
+            mediaPlayerManager.play()}
+
+            val stopIntent = Intent(context, AlarmNotificationReceiver::class.java).putExtra("action", "stop").putExtra("alarmId",alarmId)
             val stopPendingIntent = alarmId?.let {
                 PendingIntent.getBroadcast(
                     context,
                     it,
                     stopIntent,
-                    PendingIntent.FLAG_IMMUTABLE)
+                    PendingIntent.FLAG_IMMUTABLE
+                )
             }
-            val notification = NotificationCompat.Builder(context, CHANNEL_ID).
-                    setContentTitle("$alarmName Alarm").
-                    setContentText("Your alarm is triggered").
-                    setSmallIcon(R.drawable.ic_launcher_foreground).
-                    setPriority(NotificationCompat.PRIORITY_DEFAULT).
-                    addAction(
-                        R.drawable.baseline_stop_circle_24,
-                        "Stop",
-                        stopPendingIntent
-                    ).setAutoCancel(true).build()
-            alarmId?.let { notificationManager.notify(alarmId,notification) } // only works if the alarmId is not null
 
-            /**
-             * we want to make a sound till 60 seconds or till user cancel the alarm from notification.
-             * so we will make sure that after 60 seconds the alarm will stop playing automatically.
-             */
+            val notification = NotificationCompat.Builder(context!!, CHANNEL_ID)
+                .setContentTitle("$alarmName Alarm")
+                .setContentText("Your alarm is triggered")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(
+                    R.drawable.baseline_stop_circle_24,
+                    "Stop",
+                    stopPendingIntent
+
+                ).setDeleteIntent(stopPendingIntent)
+                .build()
+
+            alarmId?.let { notificationManager.notify(it, notification) }
+
+            // after 1 min stop the mediaplayer and schedule the alarm for next week
             CoroutineScope(Dispatchers.IO).launch {
                 delay(60000)
-                withContext(Dispatchers.Main){
-                    try{
-                        mediaPlayer.let{
-                            if(it.isPlaying){
-                                it.stop()
-                                it.release()
-                            }
-                        }
-                        /**
-                         * we also want to add a alarm for the next week so updating the alarm for next week
-                         */
-                        val oldAlarm = async { alarmId?.let { it1 -> alarmDbDAO.getAlarmById(it1).firstOrNull() } }.await()
-                        val newAlarm = oldAlarm?.let { Alarms(oldAlarm.id,oldAlarm.name,oldAlarm.timeInMs+604800000)} // to get the next week
-                        if (newAlarm != null) {
-                            alarmSchedulerInterface.schedule(newAlarm)
-                        }
+                withContext(Dispatchers.Main) {
+                    try {
+                        mediaPlayerManager.stop()
+                        alarmId?.let { notificationManager.cancel(it) }
+                        withContext(Dispatchers.IO) {
 
-                    }catch (e:Exception){
+                            val oldAlarm = async {
+                                alarmId?.let { id ->
+                                    alarmDbDAO.getAlarmById(id).firstOrNull()
+                                }
+                            }.await()
+                            val newAlarm = oldAlarm?.let {
+                                Alarms(
+                                    it.id,
+                                    it.name,
+                                    it.timeInMs + 604800000
+                                )
+                            }  // for next week
+                            newAlarm?.let { alarmSchedulerInterface.schedule(it) }
+                        }
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }
             }
 
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(context,"Error occurred",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Error occurred", Toast.LENGTH_SHORT).show()
         }
-
     }
 
-    /**
-     * This fun creates a notification channel if it is not created.
-     */
-    private fun createNotificationChannel(context:Context) {
+    private fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "ClockAppNotificationChannel"
             val descriptionText = "ClockAppNotificationChannel"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {   // channel id from Data.Constants
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
+
             val existingChannel = notificationManager.getNotificationChannel(CHANNEL_ID)
             if (existingChannel == null) {
                 notificationManager.createNotificationChannel(channel)
             }
             channel.enableVibration(true)
-            channel.vibrationPattern = longArrayOf(100,200,300,400,500)
-
+            channel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500)
         }
-
     }
+}
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface AlarmReceiverEntryPoint {
+    fun mediaPlayer(): MediaPlayer
+    fun notificationManager(): NotificationManager
+    fun alarmDbDAO(): AlarmDbDAO
+    fun alarmSchedulerInterface(): alarmSchedulerInterface
+    fun mediaPlayerManager(): MediaPlayerManager
 }

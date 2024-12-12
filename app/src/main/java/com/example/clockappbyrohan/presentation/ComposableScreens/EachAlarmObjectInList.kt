@@ -39,15 +39,15 @@ import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
 
 @Composable
 fun EachAlarmObjectInList(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
+    modifier: Modifier ,
+    context: Context ,
     navController: NavHostController,
     viewModel: AlarmViewModel,
     alarm: Alarms,
-    cardContainerColor: Color = CardBackgroundBlack,
-    backgroundColor: Color = Color.Black,
-    fontColor: Color = MainTextColorOrange,
-    secondaryFontColor: Color = SecondaryTextColorOrange
+    cardContainerColor: Color ,
+    backgroundColor: Color ,
+    fontColor: Color,
+    secondaryFontColor: Color
 ) {
     val configuration = LocalConfiguration.current
     val isPortrait =
@@ -57,9 +57,9 @@ fun EachAlarmObjectInList(
     val minutes = getMinutes(alarm.timeInMs)
     var AlarmTime = ""
     if (hours.toInt() > 12) {
-        AlarmTime = (hours.toInt() % 12).toString() + " : " + minutes.toString() + "  PM"
+        AlarmTime = (hours.toInt() % 12).toString().padStart(2,'0') + " : " + minutes.toString().padStart(2,'0') + "  PM"
     } else {
-        AlarmTime = hours.toString() + " : " + minutes.toString() + " AM"
+        AlarmTime = hours.toString().padStart(2,'0') + " : " + minutes.toString().padStart(2,'0') + " AM"
     }
     val isMonday = alarm.isMonday
     val isTuesday = alarm.isTuesday
@@ -77,6 +77,7 @@ fun EachAlarmObjectInList(
                     viewModel.setAlarmTitle(alarm.name.toString())
                     viewModel.setHours(getHours(alarm.timeInMs))
                     viewModel.setMinutes(getMinutes(alarm.timeInMs))
+                    viewModel.setIsNew(false)
                     navController.navigate("alarmDetailPage")
                 }
         ) {
@@ -130,10 +131,7 @@ fun EachAlarmObjectInList(
                             contentDescription = "delete",
                             tint = fontColor,
                             modifier = Modifier.clickable {
-                                //TODO make sure to call delete alarm
                                 viewModel.deleteAlarm(alarm)
-                                navController.navigate("alarmPage")
-                                //go to AlarmHomePage
                             }
                         )
                     }
@@ -211,6 +209,7 @@ fun EachAlarmObjectInList(
                     viewModel.setAlarmTitle(alarm.name.toString())
                     viewModel.setHours(getHours(alarm.timeInMs))
                     viewModel.setMinutes(getMinutes(alarm.timeInMs))
+                    viewModel.setIsNew(false)
                     navController.navigate("alarmDetailPage")
                 }
         ) {

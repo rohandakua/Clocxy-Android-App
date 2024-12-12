@@ -1,6 +1,7 @@
 package com.example.clockappbyrohan.presentation.ComposableScreens
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,98 +49,37 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.clockappbyrohan.data.offline.alarm.Alarms
 import com.example.clockappbyrohan.domain.Functions.getMsFromHoursAndMinutes
+import com.example.clockappbyrohan.domain.dataclass.Event
 import com.example.clockappbyrohan.presentation.ViewModels.AlarmViewModel
 import com.example.clockappbyrohan.ui.theme.CardBackgroundBlack
 import com.example.clockappbyrohan.ui.theme.MainTextColorOrange
 import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun AlarmDetailPagePreviewKarlaLandscape() {
-//    CustomThemeKarla() {
-//        AlarmDetailPage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun AlarmDetailPagePreviewKanitLandscape() {
-//    CustomThemeKanit() {
-//        AlarmDetailPage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun AlarmDetailPagePreviewInterLandscape() {
-//    CustomThemeInter() {
-//        AlarmDetailPage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun AlarmDetailPagePreviewPacificoLandscape() {
-//    CustomThemePacifico() {
-//        AlarmDetailPage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun AlarmDetailPagePreviewKarlaPortrait() {
-//    CustomThemeKarla() {
-//        AlarmDetailPage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun AlarmDetailPagePreviewKanitPortrait() {
-//    CustomThemeKanit() {
-//        AlarmDetailPage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun AlarmDetailPagePreviewInterPortrait() {
-//    CustomThemeInter() {
-//        AlarmDetailPage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun AlarmDetailPagePreviewPacificoPortrait() {
-//    CustomThemePacifico() {
-//        AlarmDetailPage()
-//    }
-//}
-
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AlarmDetailPage(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    isNew: Boolean = false,
-    navController: NavHostController = rememberNavController(),
+    modifier: Modifier,
+    context: Context ,
+    navController: NavHostController,
     viewModel: AlarmViewModel,
-    cardContainerColor: Color = CardBackgroundBlack,
-    backgroundColor: Color = Color.Black,
-    fontColor: Color = MainTextColorOrange,
-    secondaryFontColor: Color = SecondaryTextColorOrange
+    cardContainerColor: Color,
+    backgroundColor: Color,
+    fontColor: Color ,
+    secondaryFontColor: Color
 ) {
     var alarm = viewModel.data.collectAsState()
     var alarmTitle = viewModel.alarmTitle.collectAsState() // alarm.title
-    var hours =
-        viewModel.hours.collectAsState() // alarm.hours.toInt()%12    // set default hour value to -1 and if this is -1 then set the value of picker to current hour value else
+    var hours = viewModel.hours.collectAsState()
+
+         // alarm.hours.toInt()%12    // set default hour value to -1 and if this is -1 then set the value of picker to current hour value else
     // set the value of picker to the value of alarm.hours.toInt()%12
-    var minutes = viewModel.minutes.collectAsState() // alarm.minutes
-    var amPm =
-        if (hours.value.toInt() > 12) "PM" else "AM" // if(alarm.hours.toInt()>12) "PM" else "AM"
+    var minutes = viewModel.minutes.collectAsState()
+
     var isMonday by remember {
         mutableStateOf(alarm.value.isMonday)
     }//alarm.isMonday
@@ -208,11 +148,11 @@ fun AlarmDetailPage(
                                     fontSize = 30.sp,
                                     modifier = Modifier.fillMaxWidth(.9f),
                                     textAlign = TextAlign.Left,
-                                    lineHeight = 10.sp
+                                    lineHeight = 10.sp, color = fontColor
                                 )
                             }),
                             textStyle = LocalTextStyle.current.copy(
-                                fontSize = 30.sp, lineHeight = 10.sp
+                                fontSize = 30.sp, lineHeight = 10.sp, color = fontColor
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -244,8 +184,10 @@ fun AlarmDetailPage(
                         ) { hour, minute, amP ->
                             if (amP == "PM") {
                                 viewModel.setHours((hour + 12).toString())
+                                viewModel.setMinutes(minute.toString())
                             } else {
                                 viewModel.setHours(hour.toString())
+                                viewModel.setMinutes(minute.toString())
                             }
                         }
                     }
@@ -333,20 +275,29 @@ fun AlarmDetailPage(
 
                     Button(
                         onClick = {
-                            viewModel.saveClicked(
-                                Alarms(
-                                    id = alarm.value.id,
-                                    name = alarmTitle.value,
-                                    timeInMs = getMsFromHoursAndMinutes(hours.value, minutes.value),
-                                    isMonday,
-                                    isTuesday,
-                                    isWednesday,
-                                    isThursday,
-                                    isFriday,
-                                    isSaturday,
-                                    isSunday
-                                ), isNew
-                            )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.saveClicked(
+                                    Alarms(
+                                        id = alarm.value.id,
+                                        name = alarmTitle.value,
+                                        timeInMs = getMsFromHoursAndMinutes(
+                                            hours.value,
+                                            minutes.value
+                                        ),
+                                        isMonday,
+                                        isTuesday,
+                                        isWednesday,
+                                        isThursday,
+                                        isFriday,
+                                        isSaturday,
+                                        isSunday
+                                    )
+
+                                )
+
+
+                            }
+                            navController.popBackStack()
                         }, colors = ButtonDefaults.buttonColors(
                             containerColor = cardContainerColor
                         ), shape = RoundedCornerShape(16.dp)
@@ -401,7 +352,7 @@ fun AlarmDetailPage(
                             )
                         }),
                         textStyle = LocalTextStyle.current.copy(
-                            fontSize = 20.sp
+                            fontSize = 20.sp, color = fontColor
                         ),
                         modifier = Modifier
                             .fillMaxWidth(.9f)
@@ -440,8 +391,10 @@ fun AlarmDetailPage(
                             ) { hour, minute, amP ->
                                 if (amP == "PM") {
                                     viewModel.setHours((hour + 12).toString())
+                                    viewModel.setMinutes(minute.toString())
                                 } else {
                                     viewModel.setHours(hour.toString())
+                                    viewModel.setMinutes(minute.toString())
                                 }
                             }
                         }
@@ -528,20 +481,29 @@ fun AlarmDetailPage(
                     }
                     Button(
                         onClick = {
-                            viewModel.saveClicked(
-                                Alarms(
-                                    id = alarm.value.id,
-                                    name = alarmTitle.value,
-                                    timeInMs = getMsFromHoursAndMinutes(hours.value, minutes.value),
-                                    isMonday,
-                                    isTuesday,
-                                    isWednesday,
-                                    isThursday,
-                                    isFriday,
-                                    isSaturday,
-                                    isSunday
-                                ), isNew
-                            )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.saveClicked(
+                                    Alarms(
+                                        id = alarm.value.id,
+                                        name = alarmTitle.value,
+                                        timeInMs = getMsFromHoursAndMinutes(
+                                            hours.value,
+                                            minutes.value
+                                        ),
+                                        isMonday,
+                                        isTuesday,
+                                        isWednesday,
+                                        isThursday,
+                                        isFriday,
+                                        isSaturday,
+                                        isSunday
+                                    )
+
+                                )
+
+
+                            }
+                            navController.popBackStack()
                         }, colors = ButtonDefaults.buttonColors(
                             containerColor = cardContainerColor
                         ), shape = RoundedCornerShape(12.dp)
@@ -600,12 +562,12 @@ fun TimePicker(
     minute: String,
     onTimeSelected: (Int, Int, String) -> Unit
 ) {
-    val hours = (0..11).toList()  // List of hours
+    val hours = listOf(0,1,2,3,4,5,6,7,8,9,10,11)  // for 00:00 hrs to 24:00 hrs
     val minutes = (0..59).toList()  // List of minutes
     val ampm = listOf("AM", "PM")
     val sep = listOf(":")
 
-    val ah = hour.toInt() % 12
+    val ah = hour.toInt()
     val am = minute.toInt()
     val aampm = if (hour.toInt() >= 12) 1 else 0
     val hourState = rememberLazyListState(initialFirstVisibleItemIndex = ah + (12 * 20))
@@ -629,7 +591,7 @@ fun TimePicker(
             listState = hourState,
             onItemSelected = { selectedHour ->
                 onTimeSelected(
-                    selectedHour,
+                    selectedHour%12,
                     minuteState.firstVisibleItemIndex % 60,
                     ampm[ampmState.firstVisibleItemIndex % 2]
                 )
@@ -640,7 +602,7 @@ fun TimePicker(
             secondaryFontColor = secondaryFontColor
         )
 
-        TimeColumnPickerss(
+        TimeColumnPickerss(                 // for :
             items = sep,
             listState = sepState,
             onItemSelected = {}, textSize = textSize, numSize = numSize,
@@ -650,7 +612,7 @@ fun TimePicker(
             secondaryFontColor = secondaryFontColor
         )
 
-        TimeColumnPicker(
+        TimeColumnPicker(                     // for AM PM text
             items = minutes,
             listState = minuteState,
             onItemSelected = { selectedMinute ->

@@ -37,14 +37,14 @@ import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
 
 @Composable
 fun StopWatchPage(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    navController: NavHostController = rememberNavController(),
+    modifier: Modifier ,
+    context: Context ,
+    navController: NavHostController ,
     viewModel: StopWatchViewModel,
-    cardContainerColor: Color = CardBackgroundBlack,
-    backgroundColor: Color = Color.Black,
-    fontColor: Color = MainTextColorOrange,
-    secondaryFontColor: Color = SecondaryTextColorOrange
+    cardContainerColor: Color,
+    backgroundColor: Color ,
+    fontColor: Color ,
+    secondaryFontColor: Color
 ) {
     // Defining text variables
     var time=  viewModel.time.collectAsState()
@@ -99,7 +99,7 @@ fun StopWatchPage(
 
                             ) {
                                 Text(
-                                    text = time.value, fontSize = 31.sp
+                                    text = time.value, fontSize = 31.sp, color = fontColor
                                 )
 
                             }
@@ -148,7 +148,7 @@ fun StopWatchPage(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = resetText, fontSize = 24.sp
+                                            text = resetText, fontSize = 24.sp, color = fontColor
                                         )
                                     }
                                 }
@@ -174,7 +174,7 @@ fun StopWatchPage(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = btnText, fontSize = 24.sp
+                                            text = btnText, fontSize = 24.sp, color = fontColor
                                         )
                                     }
                                 }
@@ -213,7 +213,7 @@ fun StopWatchPage(
                         ) {
                             Column {
                                 Text(
-                                    text = time.value, fontSize = 31.sp
+                                    text = time.value, fontSize = 31.sp, color = fontColor
                                 )
                             }
                         }
@@ -261,7 +261,7 @@ fun StopWatchPage(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = resetText, fontSize = 24.sp
+                                            text = resetText, fontSize = 24.sp, color = fontColor
                                         )
                                     }
                                 }
@@ -287,7 +287,7 @@ fun StopWatchPage(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = btnText, fontSize = 24.sp
+                                            text = btnText, fontSize = 24.sp, color = fontColor
                                         )
                                     }
                                 }

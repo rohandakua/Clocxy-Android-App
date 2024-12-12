@@ -60,42 +60,18 @@ import com.example.clockappbyrohan.ui.theme.MainTextColorOrange
 import com.example.clockappbyrohan.ui.theme.MainTextColorWhite
 import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
 
-//@Preview(widthDp = 720, heightDp = 360)
-//@Composable
-//private fun viewSettingScreenPageInLandScape() {
-//    CustomThemePacifico {
-//        SettingScreenPage()
-//    }
-//
-//}
-//@Preview(widthDp = 720, heightDp = 360)
-//@Composable
-//private fun viewSettingScreenPageInLandScapeKarla() {
-//    CustomThemeKarla {
-//        SettingScreenPage()
-//    }
-//
-//}
-//@Preview()
-//@Composable
-//private fun viewSettingScreenPage() {
-//    CustomThemePacifico {
-//        SettingScreenPage()
-//    }
-//
-//}
+
 
 @Composable
 fun SettingScreenPage(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    isNew: Boolean = false,
-    navController: NavHostController = rememberNavController(),
+    modifier: Modifier ,
+    context: Context,
+    navController: NavHostController,
     viewModel: SettingViewModel,
-    cardContainerColor: Color = CardBackgroundBlack,
-    backgroundColor: Color = Color.Black,
-    fontColor: Color = MainTextColorOrange,
-    secondaryFontColor: Color = SecondaryTextColorOrange
+    cardContainerColor: Color ,
+    backgroundColor: Color ,
+    fontColor: Color ,
+    secondaryFontColor: Color
 ) {
     /**
      *      1. color =                  three options { Orange(Default) , White , Black }
@@ -301,7 +277,7 @@ fun SettingScreenPage(
                                     text = "Black",
                                     spanStyle = SpanStyle(
                                         fontSize = 25.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -320,7 +296,7 @@ fun SettingScreenPage(
                                     text = "White",
                                     spanStyle = SpanStyle(
                                         fontSize = 25.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -372,7 +348,7 @@ fun SettingScreenPage(
                                     text = "Orange",
                                     spanStyle = SpanStyle(
                                         fontSize = 25.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -391,7 +367,7 @@ fun SettingScreenPage(
                                     text = "White",
                                     spanStyle = SpanStyle(
                                         fontSize = 25.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -417,7 +393,7 @@ fun SettingScreenPage(
                                     text = "Black",
                                     spanStyle = SpanStyle(
                                         fontSize = 25.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -430,7 +406,7 @@ fun SettingScreenPage(
                 }
                 Button(
                     onClick = {
-                        viewModel.savedClicked(choosedFont.value, choosedBackgroundColor.value, choosedColor.value)
+                        viewModel.savedClicked(fontToSet = choosedFont.value, backgroundColorToSet = choosedBackgroundColor.value, colorToSet =  choosedColor.value)
                     }, colors = ButtonDefaults.buttonColors(
                         containerColor = cardContainerColor
                     ), shape = RoundedCornerShape(16.dp)
@@ -626,7 +602,7 @@ fun SettingScreenPage(
                                     text = "Black",
                                     spanStyle = SpanStyle(
                                         fontSize = 22.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -646,7 +622,7 @@ fun SettingScreenPage(
                                     text = "White",
                                     spanStyle = SpanStyle(
                                         fontSize = 22.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -699,7 +675,7 @@ fun SettingScreenPage(
                                     text = "Orange",
                                     spanStyle = SpanStyle(
                                         fontSize = 22.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -719,7 +695,7 @@ fun SettingScreenPage(
                                     text = "White",
                                     spanStyle = SpanStyle(
                                         fontSize = 22.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -740,7 +716,7 @@ fun SettingScreenPage(
                                     text = "Black",
                                     spanStyle = SpanStyle(
                                         fontSize = 22.sp,
-                                        color = MainTextColorOrange
+                                        color = fontColor
                                     )
                                 )
                             )
@@ -753,7 +729,7 @@ fun SettingScreenPage(
                 }
                 Button(
                     onClick = {
-                        viewModel.savedClicked(choosedFont.value, choosedBackgroundColor.value, choosedColor.value)
+                        viewModel.savedClicked(fontToSet = choosedFont.value, backgroundColorToSet = choosedBackgroundColor.value, colorToSet =  choosedColor.value)
                     }, colors = ButtonDefaults.buttonColors(
                         containerColor = cardContainerColor
                     ), shape = RoundedCornerShape(16.dp)

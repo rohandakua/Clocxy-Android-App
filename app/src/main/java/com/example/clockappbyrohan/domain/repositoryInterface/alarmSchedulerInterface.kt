@@ -2,6 +2,7 @@ package com.example.clockappbyrohan.domain.repositoryInterface
 
 import com.example.clockappbyrohan.data.offline.alarm.Alarms
 import com.example.clockappbyrohan.domain.dataclass.Event
+import kotlinx.coroutines.flow.Flow
 
 interface alarmSchedulerInterface {
     /**
@@ -10,7 +11,7 @@ interface alarmSchedulerInterface {
      * @return Event to notify the user if it is a success or not
      */
 
-    fun schedule(alarmItem: Alarms) : Event
+    suspend fun schedule(alarmItem: Alarms) : Event
 
     /**
      * cancel() fun is used to cancel the alarm.
@@ -42,7 +43,7 @@ interface alarmSchedulerInterface {
     /**
      * getAllAlarm() fun is used to get all the alarms.
      */
-    fun getAllAlarm():List<Alarms>
+    suspend fun getAllAlarm(): List<Alarms>
 
 
 }

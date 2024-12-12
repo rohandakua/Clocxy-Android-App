@@ -34,76 +34,12 @@ import com.example.clockappbyrohan.ui.theme.CustomThemePacifico
 import com.example.clockappbyrohan.ui.theme.MainTextColorOrange
 import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
 
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun ZenModePreviewPacificoLandscape() {
-//    CustomThemePacifico() {
-//        ZenModePage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun ZenModePreviewInterLandscape() {
-//    CustomThemeInter() {
-//        ZenModePage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun ZenModePreviewKarlaLandscape() {
-//    CustomThemeKarla() {
-//        ZenModePage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff, widthDp = 720, heightDp = 360)
-//@Composable
-//fun ZenModePreviewKanitLandscape() {
-//    CustomThemeKanit() {
-//        ZenModePage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun ZenModePreviewKanitPortrait() {
-//    CustomThemeKanit() {
-//        ZenModePage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun ZenModePreviewPacificoPortrait() {
-//    CustomThemePacifico() {
-//        ZenModePage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun ZenModePreviewInterPortrait() {
-//    CustomThemeInter() {
-//        ZenModePage()
-//    }
-//}
-//
-//@Preview(showBackground = true, backgroundColor = 0xffffff)
-//@Composable
-//fun ZenModePreviewKarlaPortrait() {
-//    CustomThemeKarla() {
-//        ZenModePage()
-//    }
-//}
-
 
 @Composable
 fun ZenModePage(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    navController: NavHostController = rememberNavController(),
+    modifier: Modifier ,
+    context: Context ,
+    navController: NavHostController ,
     viewModel: MainScreenViewModel,
     cardContainerColor: Color = CardBackgroundBlack,
     backgroundColor: Color = Color.Black,
@@ -135,16 +71,16 @@ fun ZenModePage(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = timeHourText, fontSize = 70.sp)
-                    Text(text = ":", fontSize = 70.sp)
-                    Text(text = timeMinuteText, fontSize = 70.sp)
-                    Text(text = ":", fontSize = 70.sp)
-                    Text(text = timeSecondText, fontSize = 70.sp)
+                    Text(text = timeHourText, fontSize = 70.sp, color = fontColor)
+                    Text(text = ":", fontSize = 70.sp, color = fontColor)
+                    Text(text = timeMinuteText, fontSize = 70.sp, color = fontColor)
+                    Text(text = ":", fontSize = 70.sp, color = fontColor)
+                    Text(text = timeSecondText, fontSize = 70.sp, color = fontColor)
                 }
 
                 Column {
-                    Text(text = dateText, fontSize = 30.sp)
-                    Text(text = dayText, fontSize = 30.sp)
+                    Text(text = dateText, fontSize = 30.sp, color = fontColor)
+                    Text(text = dayText, fontSize = 30.sp, color = fontColor)
                 }
 
 
@@ -167,17 +103,17 @@ fun ZenModePage(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = timeHourText, fontSize = 70.sp)
-                    Text(text = ":", fontSize = 70.sp)
-                    Text(text = timeMinuteText, fontSize = 70.sp)
-                    Text(text = ":", fontSize = 70.sp)
-                    Text(text = timeSecondText, fontSize = 70.sp)
+                    Text(text = timeHourText, fontSize = 70.sp, color = fontColor)
+                    Text(text = ":", fontSize = 70.sp, color = fontColor)
+                    Text(text = timeMinuteText, fontSize = 70.sp, color = fontColor)
+                    Text(text = ":", fontSize = 70.sp, color = fontColor)
+                    Text(text = timeSecondText, fontSize = 70.sp, color = fontColor)
                 }
 
                 Row {
-                    Text(text = dateText, fontSize = 30.sp)
+                    Text(text = dateText, fontSize = 30.sp, color = fontColor)
                     Spacer(modifier = Modifier.size(20.dp))
-                    Text(text = dayText, fontSize = 30.sp)
+                    Text(text = dayText, fontSize = 30.sp, color = fontColor)
                 }
 
 

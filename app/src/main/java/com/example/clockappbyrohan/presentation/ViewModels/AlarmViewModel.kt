@@ -4,6 +4,9 @@ import android.app.AlarmManager
 import android.content.Context
 import android.media.metrics.Event
 import android.widget.Toast
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.DialogHost
@@ -20,8 +23,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -51,8 +58,17 @@ class AlarmViewModel @Inject constructor(
     private var _data =
         MutableStateFlow(Alarms(0, "", 0, false, false, false, false, false, false, false))
     val data: StateFlow<Alarms> get() = _data
-    private var _alarmList = mutableListOf<Alarms>()
+    private var _alarmList = MutableStateFlow(listOf<Alarms>())
     val alarmList get() = _alarmList
+    fun setAlarmList (list: List<Alarms>){
+        _alarmList.value = list
+    }
+
+    private var _isNew = MutableStateFlow(false)
+    val isNew: StateFlow<Boolean> get() = _isNew
+    fun setIsNew(a: Boolean) {
+        _isNew.value = a
+    }
 
     fun setAlarm(alarm: Alarms){
         _data.value = alarm
@@ -70,14 +86,15 @@ class AlarmViewModel @Inject constructor(
     /**
      * getAllAlarms() is used to get all the alarm in a list
      */
-    fun getAllAlarms(): List<Alarms> {
+    suspend fun getAllAlarms(): List<Alarms> {
         return getAllAlarm.execute()
     }
     /**
      * getAllAlarm() is used to update the _alarmList
      */
-    fun getAllAlarm() {
-        _alarmList = getAllAlarm.execute().toMutableList()
+    suspend fun getAllAlarm() {
+        _alarmList.value = getAllAlarm.execute()
+        setAlarmList(_alarmList.value.toMutableList())
     }
 
     /**
@@ -110,12 +127,39 @@ class AlarmViewModel @Inject constructor(
      * @return Returns a event
      * use this returned event when the alarm is new , we have managed here for the case when the alarm is old and being updated.
      */
-    fun saveClicked(
+    suspend fun saveClicked(
         alarm: Alarms,
-        isNew: Boolean
-    ): com.example.clockappbyrohan.domain.dataclass.Event {
+        isNew: Boolean=_isNew.value
+    ){
         if (isNew) {
-            return scheduleAlarm.execute(alarm)
+            scheduleAlarm.execute(alarm) { result ->
+                when (result) {
+                    com.example.clockappbyrohan.domain.dataclass.Event.SUCCESS -> {
+                        viewModelScope.launch {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    context,
+                                    "Successfully Saved alarm",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+
+                    com.example.clockappbyrohan.domain.dataclass.Event.FAILURE -> {
+                        viewModelScope.launch {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    context,
+                                    "Error in saving alarm",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             updateAlarm.execute(alarm) { result ->
                 when (result) {
@@ -144,7 +188,6 @@ class AlarmViewModel @Inject constructor(
                     }
                 }
             }
-            return com.example.clockappbyrohan.domain.dataclass.Event.SUCCESS
         }
 
 
@@ -165,7 +208,9 @@ class AlarmViewModel @Inject constructor(
                             Toast.makeText(context,"Successfully deleted $alarmName",Toast.LENGTH_SHORT).show()
                         }
                     }
-                    getAllAlarm()
+                    CoroutineScope(Dispatchers.Default).launch {
+                        getAllAlarm()
+                    }
                 }
                 com.example.clockappbyrohan.domain.dataclass.Event.FAILURE->{
                     viewModelScope.launch {
@@ -173,7 +218,9 @@ class AlarmViewModel @Inject constructor(
                             Toast.makeText(context,"Unable to delete $alarmName",Toast.LENGTH_SHORT).show()
                         }
                     }
-                    getAllAlarm()
+                    CoroutineScope(Dispatchers.Default).launch {
+                        getAllAlarm()
+                    }
                 }
             }
 

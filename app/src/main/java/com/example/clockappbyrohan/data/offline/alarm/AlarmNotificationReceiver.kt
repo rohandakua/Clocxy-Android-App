@@ -1,40 +1,65 @@
 package com.example.clockappbyrohan.data.offline.alarm
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import androidx.core.content.getSystemService
+import com.example.clockappbyrohan.framework.MediaPlayerManager
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * This class is used to receive the notification from the alarm manager when the alarm is triggered and AlarmReceiver class is used to show the notification.
  * alarmTriggered -> alarmReceiver receives it -> alarmReceiver shows the notification and plays the sound -> when notification's button is clicked -> this class receives it -> stops the alarm
  */
-class AlarmNotificationReceiver @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val mediaPlayer: MediaPlayer
-) :BroadcastReceiver() {
+@AndroidEntryPoint
+class AlarmNotificationReceiver : BroadcastReceiver() {
 
-    /**
-     * onReceive() fun is called when the user clicks the stop button on the notification.
-     * it should stop the sound.
-     */
-    override fun onReceive(p0: Context?, p1: Intent?) {
+    private lateinit var mediaPlayerManager: MediaPlayerManager
+
+    override fun onReceive(context: Context?, intent: Intent?) {
         try {
-            p1?.let {
+            // Manually inject dependencies using Hilt
+            if (!::mediaPlayerManager.isInitialized) {
+                val entryPoint = EntryPointAccessors.fromApplication(
+                    context!!.applicationContext,
+                    AlarmNotificationReceiverEntryPoint::class.java
+                )
+                mediaPlayerManager = entryPoint.mediaPlayerManager()
+            }
+
+            intent?.let {
+                println("in intent")
                 val action = it.getStringExtra("action")
-                if(action=="stop"){
-                    mediaPlayer.let {
-                        if(it.isPlaying){
-                            it.stop()
-                            it.release()
-                        }
-                    }
+                val alarmId = it.getIntExtra("alarmId",0)
+                if (action == "stop") {
+                    println("in stop")
+                    CoroutineScope(Dispatchers.Main).launch {
+                    mediaPlayerManager.stop()}
+                    val n = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    n.cancel(alarmId)
                 }
             }
-        }catch (e : Exception){
+
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+}
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface AlarmNotificationReceiverEntryPoint {
+    fun mediaPlayerManager(): MediaPlayerManager
 }

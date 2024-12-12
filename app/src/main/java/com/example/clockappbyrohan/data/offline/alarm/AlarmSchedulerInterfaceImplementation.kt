@@ -14,6 +14,8 @@ import com.example.clockappbyrohan.domain.repositoryInterface.alarmSchedulerInte
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
@@ -34,75 +36,88 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
      * we are using AlarmManager from hilt to schedule the alarm.
      * if scheduling the alarm is successful then we are returning Event.SUCCESS else Event.FAILURE
      */
-    override fun schedule(alarmItem: Alarms): Event {
+    override suspend fun schedule(alarmItem: Alarms): Event {
         val day = LocalDate.now().dayOfWeek.value
         week.setDay(day)
         var count = 0
+
         do {
             //check for the day
+            withContext(Dispatchers.Default) {
 
-            if (week.toSet(week.getDay(), alarmItem)) {
-                // schedule alarm after (timeInMs+count*24*60*60*1000)
-                /**
-                 * making a pending intent for the alarm.
-                 * the id of the pending intent is set as the id of the alarm.
-                 * the AlarmReceiver class is the Broadcast receiver that is to be called when the alarm is triggered.
-                 * FLAG_IMMUTABLE is used to make the pending intent immutable.
-                 */
-                val intent = Intent(context, AlarmReceiver::class.java).putExtra(
-                    "alarmId",
-                    getId(alarmItem.id, week.getDay())
-                )
-                    .putExtra("alarmName", alarmItem.name)
-                val alarmIntent = PendingIntent.getBroadcast(
-                    context,
-                    getId(alarmItem.id, week.getDay()),
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE
-
-                )
-
-                try {
-                    if (Build.VERSION.SDK_INT > 30 && !alarmManager.canScheduleExactAlarms()) {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            Toast.makeText(
-                                context,
-                                "Please allow the app to schedule exact alarms",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        return Event.FAILURE
-                    }
-                    alarmManager.setAlarmClock(
-                        AlarmManager.AlarmClockInfo(
-                            getExactTime(alarmItem.timeInMs, count),          // this should be the epoch time in milliseconds
-                            alarmIntent
-                        ),
-                        alarmIntent
-                    )
-                    // insert the alarm to the dataBase
+                if (week.toSet(week.getDay(), alarmItem)) {
+                    // schedule alarm after (timeInMs+count*24*60*60*1000)
                     /**
-                     * if the alarmId exist in the database then we are updating it else we are inserting it.
+                     * making a pending intent for the alarm.
+                     * the id of the pending intent is set as the id of the alarm.
+                     * the AlarmReceiver class is the Broadcast receiver that is to be called when the alarm is triggered.
+                     * FLAG_IMMUTABLE is used to make the pending intent immutable.
                      */
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (alarmDbDao.getAlarmById(alarmItem.id).lastOrNull() != null) {
-                            alarmDbDao.updateAlarm(alarmItem)
-                        } else {
-                            alarmDbDao.insertAlarm(alarmItem)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.d(
-                        "from alarmSchedulerInterfaceImplementation",
-                        "error in scheduling alarm id ${getId(alarmItem.id, week.getDay())}"
+                    val intent = Intent(context, AlarmReceiver::class.java).putExtra(
+                        "alarmId",
+                        getId(alarmItem.id, week.getDay())
                     )
-                    return Event.FAILURE
-                }
+                        .putExtra("alarmName", alarmItem.name)
+                    val alarmIntent = PendingIntent.getBroadcast(
+                        context,
+                        getId(alarmItem.id, week.getDay()),
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE
 
+                    )
+
+                    try {
+                        if (Build.VERSION.SDK_INT > 30 && !alarmManager.canScheduleExactAlarms()) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                Toast.makeText(
+                                    context,
+                                    "Please allow the app to schedule exact alarms",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            return@withContext Event.FAILURE
+                        }
+                        alarmManager.setAlarmClock(
+                            AlarmManager.AlarmClockInfo(
+                                getExactTime(
+                                    alarmItem.timeInMs,
+                                    count
+                                ),          // this should be the epoch time in milliseconds
+                                alarmIntent
+                            ),
+                            alarmIntent
+                        )
+                        // insert the alarm to the dataBase
+                        /**
+                         * if the alarmId exist in the database then we are updating it else we are inserting it.
+                         */
+                            println("alarm id ${alarmItem.id} updating or saving ")
+                            if (alarmDbDao.getAlarmById(alarmItem.id).firstOrNull() != null) {
+                                println("in if")
+                                alarmDbDao.updateAlarm(alarmItem)
+                                println("alarm updated")
+                            } else {
+                                println("in else")
+                                alarmDbDao.insertAlarm(alarmItem)
+                                println("alarm inserted")
+                            }
+
+                    } catch (e: Exception) {
+                        Log.d(
+                            "from alarmSchedulerInterfaceImplementation",
+                            "error in scheduling alarm id ${getId(alarmItem.id, week.getDay())}"
+                        )
+                        return@withContext Event.FAILURE
+                    }
+
+                }else{
+
+                }
             }
             count++
             week.incDay() // this increases the day by 1 every time
         } while (day != week.getDay())
+        println("from asii did leave the do while loop")
         return Event.SUCCESS
 
 
@@ -133,9 +148,6 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
                 try {
                     if (alarmIntent != null) {
                         alarmManager.cancel(alarmIntent)
-                        CoroutineScope(Dispatchers.IO).launch {
-                            alarmDbDao.deleteAlarm(alarmItem)
-                        }
                     }
                 } catch (e: Exception) {
                     Log.d("from alarmSchedulerInterfaceImplementation", "error in cancelling alarm")
@@ -213,10 +225,12 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
     override suspend fun rescheduleAllAlarm(): Event {
         try {
             val currentTime = System.currentTimeMillis()
-            val alarmItems = alarmDbDao.getAllAlarms(currentTime)
-            for (alarm in alarmItems) {
-                schedule(alarm)
-            }
+            val alarmItems = alarmDbDao.getAllAlarms()
+                for (alarm in alarmItems) {
+                    schedule(alarm)
+                }
+
+
             return Event.SUCCESS
         } catch (e: Exception) {
             Log.d("from alarmSchedulerInterfaceImplementation", "error in rescheduling alarm")
@@ -239,7 +253,7 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
                     cancel(oldAlarm)
                 }
                 alarmDbDao.updateAlarm(alarmItem)
-                Event.SUCCESS
+                schedule(alarmItem)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -250,11 +264,14 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
     /**
      * getAllAlarm() fun is used to get all the alarms.
      */
-    override fun getAllAlarm(): List<Alarms> {
-        try {
-            val currentTime = System.currentTimeMillis()
-            val alarmItems = alarmDbDao.getAllAlarms(currentTime)
-            return alarmItems
+    override suspend fun getAllAlarm(): List<Alarms> {
+
+        return try {
+            withContext(Dispatchers.Default){
+            val alarmItems = alarmDbDao.getAllAlarms()
+            println("recieved all the alarms")
+                println(alarmItems)
+            alarmItems }
         }catch (e: Exception){
             e.printStackTrace()
             return emptyList()

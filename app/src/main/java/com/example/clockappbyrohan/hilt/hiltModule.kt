@@ -5,14 +5,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.RingtoneManager
-import androidx.compose.material3.MediumTopAppBar
-import androidx.room.Database
 import androidx.room.Room
 import com.example.clockappbyrohan.data.offline.StopwatchRepositoryImplementation
 import com.example.clockappbyrohan.data.offline.alarm.AlarmDbDAO
 import com.example.clockappbyrohan.data.offline.alarm.AlarmSchedulerInterfaceImplementation
 import com.example.clockappbyrohan.data.offline.alarm.Week
-import com.example.clockappbyrohan.data.offline.alarm.alarmDb
+import com.example.clockappbyrohan.data.offline.alarm.AlarmDb
 import com.example.clockappbyrohan.data.online.API_KEY
 import com.example.clockappbyrohan.data.online.BaseUrlWeatherApi
 import com.example.clockappbyrohan.domain.repositoryInterface.StopwatchRepository
@@ -27,17 +25,17 @@ import com.example.clockappbyrohan.domain.usecase.stopwatchUsecase.GetFormattedT
 import com.example.clockappbyrohan.domain.usecase.stopwatchUsecase.PauseStopwatch
 import com.example.clockappbyrohan.domain.usecase.stopwatchUsecase.ResetStopwatch
 import com.example.clockappbyrohan.domain.usecase.stopwatchUsecase.StartStopwatch
+import com.example.clockappbyrohan.framework.MediaPlayerManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -106,18 +104,18 @@ object hiltModule {
     }
 
     @Provides
+    fun providesUserDao(@ApplicationContext context: Context,
+                                  alarmDbObj: AlarmDb): AlarmDbDAO{
+        return alarmDbObj.AlarmDbDAO()
+    }
+    @Provides
     @Singleton
-    fun provideAlarmDB(@ApplicationContext context: Context): alarmDb {
+    fun provideAlarmDB(@ApplicationContext context: Context): AlarmDb {
         return Room.databaseBuilder(
             context,
-            alarmDb::class.java,
+            AlarmDb::class.java,
             "alarm_db"
         ).build()
-    }
-
-    @Provides fun providesUserDao(@ApplicationContext context: Context,
-                                  alarmDbObj: alarmDb): AlarmDbDAO{
-        return alarmDbObj.AlarmDbDAO()
     }
 
     @Provides
@@ -129,6 +127,17 @@ object hiltModule {
             throw RuntimeException("Error in creating media player")
         }
 
+    }
+    @Provides
+    @Singleton
+    fun provideMediaPlayerManager(
+        @ApplicationContext context: Context
+    ):MediaPlayerManager{
+        return try {
+            MediaPlayerManager(context)
+        }catch (e:Exception){
+            throw RuntimeException("Error in creating media player manager")
+        }
     }
 
     @Provides

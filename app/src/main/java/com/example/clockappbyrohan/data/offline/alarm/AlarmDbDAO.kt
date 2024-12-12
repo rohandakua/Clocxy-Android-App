@@ -38,7 +38,7 @@ interface AlarmDbDAO{
      * this will return all the alarm in the ascending order of their time in ms.
      */
     @Query("SELECT * FROM alarm_db ORDER BY timeInMs ASC")
-    fun getAllAlarms(currentTimeInMs:Long): List<Alarms>
+    fun getAllAlarms(): List<Alarms>
 
     /**
      * deleteAlarmById() fun is used to delete the alarm from the database by its id.
@@ -61,7 +61,5 @@ interface AlarmDbDAO{
      * it will run periodically at a interval of 6 hours
      */
     @Query("DELETE FROM alarm_db WHERE timeInMs < :currentTimeInMs")
-    fun deleteOldAlarms(currentTimeInMs: Long = System.currentTimeMillis())
-
-
+    fun deleteOldAlarms(currentTimeInMs: Long )
 }
