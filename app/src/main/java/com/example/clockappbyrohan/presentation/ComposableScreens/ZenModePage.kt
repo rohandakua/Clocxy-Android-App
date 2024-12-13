@@ -1,5 +1,6 @@
 package com.example.clockappbyrohan.presentation.ComposableScreens
 
+import android.app.NotificationManager
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +37,23 @@ import com.example.clockappbyrohan.ui.theme.CustomThemePacifico
 import com.example.clockappbyrohan.ui.theme.MainTextColorOrange
 import com.example.clockappbyrohan.ui.theme.SecondaryTextColorOrange
 
+fun enableDoNotDisturb(context: Context) {
+    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+    if (notificationManager.isNotificationPolicyAccessGranted) {
+        println("DND turned on")
+        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+    }
+}
+
+fun disableDoNotDisturb(context: Context) {
+    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    if (notificationManager.isNotificationPolicyAccessGranted) {
+        println("DND turned off")
+        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+    }
+}
 @Composable
 fun ZenModePage(
     modifier: Modifier ,
@@ -46,6 +65,15 @@ fun ZenModePage(
     fontColor: Color = MainTextColorOrange,
     secondaryFontColor: Color = SecondaryTextColorOrange
 ) {
+
+    DisposableEffect(Unit) {
+        enableDoNotDisturb(context)
+
+        onDispose {
+            disableDoNotDisturb(context)
+        }
+    }
+
     val localConfiguration = LocalConfiguration.current
     val isPortrait =
         localConfiguration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
@@ -125,3 +153,4 @@ fun ZenModePage(
 
 
 }
+

@@ -51,7 +51,6 @@ fun HomePage(
     fontColor: Color ,
     secondaryFontColor: Color
 ) {
-    viewModel.dosth()
 
 
     // Defining text variables

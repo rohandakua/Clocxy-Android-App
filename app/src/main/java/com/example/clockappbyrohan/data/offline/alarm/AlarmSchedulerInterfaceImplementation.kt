@@ -87,20 +87,7 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
                             ),
                             alarmIntent
                         )
-                        // insert the alarm to the dataBase
-                        /**
-                         * if the alarmId exist in the database then we are updating it else we are inserting it.
-                         */
-                            println("alarm id ${alarmItem.id} updating or saving ")
-                            if (alarmDbDao.getAlarmById(alarmItem.id).firstOrNull() != null) {
-                                println("in if")
-                                alarmDbDao.updateAlarm(alarmItem)
-                                println("alarm updated")
-                            } else {
-                                println("in else")
-                                alarmDbDao.insertAlarm(alarmItem)
-                                println("alarm inserted")
-                            }
+
 
                     } catch (e: Exception) {
                         Log.d(
@@ -117,6 +104,24 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
             count++
             week.incDay() // this increases the day by 1 every time
         } while (day != week.getDay())
+        try{
+            // insert the alarm to the dataBase
+            /**
+             * if the alarmId exist in the database then we are updating it else we are inserting it.
+             */
+            println("alarm id ${alarmItem.id} updating or saving ")
+            if (alarmDbDao.getAlarmById(alarmItem.id).firstOrNull() != null) {
+                println("in if")
+                alarmDbDao.updateAlarm(alarmItem)
+                println("alarm updated")
+            } else {
+                println("in else")
+                alarmDbDao.insertAlarm(alarmItem)
+                println("alarm inserted")
+            }
+        }catch (e: Exception){
+            Log.d("asii",e.message.toString())
+        }
         println("from asii did leave the do while loop")
         return Event.SUCCESS
 
@@ -208,6 +213,20 @@ class AlarmSchedulerInterfaceImplementation @Inject constructor(
                 count++
 
             } while (day != week.getDay())
+            try {
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        alarmDbDao.deleteAlarm(alarmItem)
+                    }
+
+            } catch (e: Exception) {
+                Log.d(
+                    "from alarmSchedulerInterfaceImplementation",
+                    "error in cancelling alarm"
+                )
+                return Event.FAILURE
+
+            }
 
         } catch (e: Exception) {
             Log.d("from alarmSchedulerInterfaceImplementation", "error in cancelling alarm")

@@ -40,9 +40,6 @@ class MainScreenViewModel @Inject constructor(
     private val weatherRetrofit: weatherRetrofit,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-    public fun dosth() {
-        //Log.d("kyya", "ho rha ha")
-    }
 
     private val _hour: MutableStateFlow<Int?> = MutableStateFlow<Int?>(null)
     var hour: StateFlow<Int?> = _hour
@@ -128,21 +125,25 @@ class MainScreenViewModel @Inject constructor(
     }
     var triedTimes=0;
 
-    //    @SuppressLint("SupportAnnotationUsage")
-//    @RequiresPermission(
-//        anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION]
-//    )
     @SuppressLint("MissingPermission")
     private fun fetchLocation(context: Context) {
 
             try {
                 val locationTask =LocationServices.getFusedLocationProviderClient(context).lastLocation.addOnSuccessListener { location: Location? ->
                     setLocationData(location)
+
+                    val sharedPreferences = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+                    sharedPreferences.edit().putString("latitude", location?.latitude.toString()).apply()
+                    sharedPreferences.edit().putString("longitude",location?.longitude.toString()).apply()
                     Log.d("location", "${location?.latitude} ${location?.longitude}")
                 }.addOnFailureListener { exception ->
                     val location = Location("gps")
-                    location.latitude = 28.6139
-                    location.longitude = 77.2090 // defaulting to location of delhi
+                    val sharedPreferences = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+
+                    var latish = sharedPreferences.getString("latitude",28.6139.toString())
+                    var longish = sharedPreferences.getString("longitude",77.2090.toString())
+                    location.latitude = latish!!.toDouble()
+                    location.longitude = longish!!.toDouble() // defaulting to location of delhi
                     setLocationData(location)
                 }
             } catch (e: Exception) {

@@ -72,6 +72,9 @@ class MainActivity : ComponentActivity() {
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.MANAGE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_NOTIFICATION_POLICY
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
@@ -82,7 +85,8 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.SCHEDULE_EXACT_ALARM,
                     Manifest.permission.POST_NOTIFICATIONS,
                     Manifest.permission.READ_MEDIA_AUDIO,
-                    Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                    Manifest.permission.MANAGE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_NOTIFICATION_POLICY
                 ),
                 LOCATION_PERMISSION_REQUEST_CODE
             )

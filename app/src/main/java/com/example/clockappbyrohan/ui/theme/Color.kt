@@ -21,5 +21,5 @@ val MainTextColorBlack = Color(0xFF000000)
 val SecondaryTextColorBlack = Color(0xFF7E7D7D)
 
 val MainTextColorWhite = Color(0xFFFFFFFF)
-val SecondaryTextColorWhite = Color(0xFF444444)
+val SecondaryTextColorWhite = Color(0xD0F0F0F0)
 
