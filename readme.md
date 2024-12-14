@@ -152,6 +152,8 @@ SQLite is an offline database that is locally stored in the user’s device and 
 > <br>
 > Checkout for the library versions for future.
 
+## Next Updates :-
+We want to create a widget for this app. Widget should show the current time and weather details. If you are interested to develop one then create one and raise a PR. It would be a huge help for us.
 
 ## What to do if you want to run this on your phone
 You can download the app from google play store or use the guide below to make your own version.
