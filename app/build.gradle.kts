@@ -11,15 +11,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.clockappbyrohan"
-    compileSdk = 34
+    namespace = "com.clocxy.clocxyone"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.clockappbyrohan"
+        applicationId = "com.clocxy.clocxyone"
         minSdk = 27
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -60,6 +60,7 @@ android {
  val MOCKITO_VERSION = "4.11.0"
  val CORE_TESTING_VERSION = "2.1.0"
  val KOTLINX_COROUTINES_TEST_VERSION = "1.7.3"
+ val PAGER_VERSION = "0.32.0"
 
 dependencies {
 
@@ -71,6 +72,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -101,12 +103,17 @@ dependencies {
     // Room components
     implementation("androidx.room:room-runtime:${ROOM_VERSION}")
     implementation("androidx.room:room-ktx:${ROOM_VERSION}")
-    annotationProcessor("androidx.room:room-compiler:${ROOM_VERSION}")
+    kapt("androidx.room:room-compiler:${ROOM_VERSION}")
 
 
     testImplementation ("org.mockito:mockito-core:${MOCKITO_VERSION}")
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:${KOTLINX_COROUTINES_TEST_VERSION}")
     androidTestImplementation ("androidx.arch.core:core-testing:${CORE_TESTING_VERSION}") // For LiveData/StateFlow
+
+    // for swipe screen
+    implementation ("androidx.compose.foundation:foundation:1.5.0")
+
+
 
 
 
