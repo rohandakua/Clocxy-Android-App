@@ -1,0 +1,27 @@
+1. make sure when the user is going to zen mode the do not disturb mode of the phone turns on
+2. work on swipe gesture in the home screen
+3. work on alarm section backend DONE
+4. work on setting page
+5. remember the initial screen DONE
+6. make a clock widget for the app
+7. write test for the app
+8. optimize it for different screen size DONE
+9. check for same time alarm if they are going on or not
+10.check for alarm after device reboots , are they fired or not
+11.the app is closing after the timeout time in zen mode . fix this.
+12.Get the permission from the user for everything
+
+
+TODO for 12 dec 2024
+1. fix the issue of not setting the right alarm time in alarmDetailScreen DONE
+2. fix the issue of notification of the alarm where the mediaPlayer is not stopping  DONE
+3. make the backend for setting screen for changing the theme and color DONE
+4. release the bug free apk and apply for testing in google playStore
+
+
+TODO for 13 dec 2024
+1. create the widget for the clock app FOR NEXT VERSION
+2. integrate it with the home screen
+3. fix any bugs that is received DONE
+4. write the readme.md file and make the project final and post it on twitter
+

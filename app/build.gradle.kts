@@ -11,15 +11,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.clockappbyrohan"
+    namespace = "com.clocxy.clocxyone"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.clockappbyrohan"
+        applicationId = "com.clocxy.clocxyone"
         minSdk = 27
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
